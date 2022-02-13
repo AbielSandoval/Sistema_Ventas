@@ -384,14 +384,14 @@ Create Table Usuario
 (IdUsuario Int Identity Primary Key,
 IdEmpleado Int Not Null References Empleado,
 Usuario Varchar(20) Not Null,
-ContraseÒa Varchar(12) Not Null
+Contrase√±a Varchar(12) Not Null
 )
 Go
 
 Create Proc RegistrarUsuario
 @IdEmpleado Int,
 @Usuario Varchar(20),
-@ContraseÒa Varchar(12),
+@Contrase√±a Varchar(12),
 @Mensaje Varchar(50) Out
 As Begin
 	If(Not Exists(Select * From Empleado Where IdEmpleado=@IdEmpleado))
@@ -401,9 +401,9 @@ As Begin
 			Set @Mensaje='Este Empleado Ya Tiene una Cuenta de Usuario.'
 		Else Begin
 			If(Exists(Select * From Usuario Where Usuario=@Usuario))
-				Set @Mensaje='El Usuario: '+@Usuario+' No est· Disponible.'
+				Set @Mensaje='El Usuario: '+@Usuario+' No est√° Disponible.'
 			Else Begin
-				Insert Usuario Values(@IdEmpleado,@Usuario,@ContraseÒa)
+				Insert Usuario Values(@IdEmpleado,@Usuario,@Contrase√±a)
 					Set @Mensaje='Usuario Registrado Correctamente.'
 				 End
 			 End
@@ -413,20 +413,20 @@ Go
 
 Create Proc IniciarSesion
 @Usuario Varchar(20),
-@ContraseÒa Varchar(12),
+@Contrase√±a Varchar(12),
 @Mensaje Varchar(50) Out
 As Begin
 	Declare @Empleado Varchar(50)
 	If(Not Exists(Select Usuario From Usuario Where Usuario=@Usuario))
 		Set @Mensaje='El Nombre de Usuario no Existe.'
 		Else Begin
-			If(Not Exists(Select ContraseÒa From Usuario Where ContraseÒa=@ContraseÒa))
-				Set @Mensaje='Su ContraseÒa es Incorrecta.'
+			If(Not Exists(Select Contrase√±a From Usuario Where Contrase√±a=@Contrase√±a))
+				Set @Mensaje='Su Contrase√±a es Incorrecta.'
 				Else Begin
 					Set @Empleado=(Select E.Nombres+', '+E.Apellidos From Empleado E Inner Join Usuario U 
 								   On E.IdEmpleado=U.IdEmpleado Where U.Usuario=@Usuario)
 					    Begin
-					Select Usuario,ContraseÒa From Usuario Where Usuario=@Usuario And ContraseÒa=@ContraseÒa
+					Select Usuario,Contrase√±a From Usuario Where Usuario=@Usuario And Contrase√±a=@Contrase√±a
 							Set @Mensaje='Bienvenido Sr(a): '+@Empleado+'.'
 						End
 				  End
@@ -436,11 +436,11 @@ Go
 
 Create Proc DevolverDatosSesion
 @Usuario Varchar(20),
-@ContraseÒa Varchar(12)
+@Contrase√±a Varchar(12)
 As Begin
 	Select E.IdEmpleado,E.Apellidos+', '+E.Nombres 
 	From Empleado E Inner Join Usuario U On E.IdEmpleado=U.IdEmpleado 
-	Where U.Usuario=@Usuario And U.ContraseÒa=@ContraseÒa
+	Where U.Usuario=@Usuario And U.Contrase√±a=@Contrase√±a
 	End
 Go
 
@@ -559,41 +559,3 @@ Go
 
 Insert Cargo Values('Administrador')
 Insert Cargo Values('Vendedor')
-
-Go
-Insert Empleado Values(1,'34004387','Silva Terrones','Miguel','M','01/11/1990','Urb. Santa Rosa','S')
-Insert Empleado Values(2,'402123456789','Sandoval','Abiel','M','26/01/2002','Villa Juana','S')
-Insert Usuario Values(1,'Juan','123')
-Insert Usuario Values(2,'Abiel','123')
-
-
-Go
-
-Select * From Usuario
-select * from Empleado
-Go
-
-delete Usuario where IdEmpleado=3
-
-
-
-Select * From Usuario
-select * from Empleado
-Select * From Producto
-Select * From Cliente
-select * from Empleado
-Select * From Cargo
-select * from Categoria
-select * from Venta
-select * from DetalleVenta
-select * from Historial
-
-Insert Historial Values('Colmado Papo','Villa Mella','Coca-Cola','30','01/11/2021')
-
-delete Empleado where IdEmpleado=1
-delete venta where IdEmpleado=2
-delete DetalleVenta where id=2
-
-delete Historial where CantidadSuministrada=30 or CantidadSuministrada=0 or CantidadSuministrada=100
-
-update Cargo set Descripcion='Suplidor' where IdCargo=3
